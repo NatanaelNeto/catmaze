@@ -12,9 +12,14 @@
     <div class="div-side-menu">
         <h1>CatMaze</h1>
         <h2>Resolva o labirinto seguindo o caminho do Gato Estrela</h2>
+        <p>Nosso gatinho está querendo chegar no pote de ração, porém visivelmente ele está longe demais! Ajue ele a chegar mais perto de sua ração.</p>
+        <p>Selecione a porcentagem de barreiras para começar.</p>
         <div class="div-btn">
 
-            <button onclick="randNumber(40)">Começar</button>
+            <div>
+                <input type="range" min="0" max="25" value="25" id="pcent" class="slider"  onmousemove="setPCent(this.value)"> <span id="pcentValue">25%</span>
+            </div>
+            <button onclick="startBtn()">Começar</button>
         </div>
     </div>
     <div class="div-main">
