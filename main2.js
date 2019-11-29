@@ -27,6 +27,7 @@ var Node = {
     c: false
 }
 
+
 canvas.classList.add("canvas3d");
 
 randNumber = function(limit){
@@ -35,8 +36,8 @@ randNumber = function(limit){
 };
 
 distMapGen = function(a,b,x,y){
-    return (Math.abs(x-a) + Math.abs(y-b));
-    //return Math.sqrt( ((Math.pow((x-a),2)) + (Math.pow((y-b),2)) ) );
+    //return Math.abs(x-a) + Math.abs(y-b);
+    return Math.sqrt( ((Math.pow((x-a),2)) + (Math.pow((y-b),2)) ) );
 }
 
 setPCent = function(v){
@@ -44,6 +45,7 @@ setPCent = function(v){
 }
 
 startBtn = function(){
+    sSearch = false;
     bitMap = new Array(40);
     for(var i = 0; i< 40;i++){
         bitMap[i] = new Array(40);
@@ -134,8 +136,8 @@ startSearch = function(){
                 bitMap[i][j].h = distMapGen(i,j,goalA,goalB);
                 bitMap[i][j].pA = null;
                 bitMap[i][j].pB = null;
-                bitMap[i][j].v = null;
-                bitMap[i][j].c = null;
+                bitMap[i][j].v = false;
+                bitMap[i][j].c = false;
                 if(bitMap[i][j].type != 2 && bitMap[i][j].type != 3){
                     ctx.fillStyle = "#ffffff";
                     ctx.fillRect(i*10,j*10,10,10);
@@ -158,39 +160,39 @@ startSearch = function(){
             if(aux.a-1 >= 0){
                 if(aux.b-1 >= 0 && bitMap[aux.a-1][aux.b-1].type != 1 && bitMap[aux.a-1][aux.b].type != 1 && bitMap[aux.a][aux.b-1].type != 1 && !bitMap[aux.a-1][aux.b-1].c){
                     if(!bitMap[aux.a-1][aux.b-1].v){
-                        bitMap[aux.a-1][aux.b-1].g = aux.g+1.05;
+                        bitMap[aux.a-1][aux.b-1].g = aux.g+14;
                         bitMap[aux.a-1][aux.b-1].pA = aux.a;
                         bitMap[aux.a-1][aux.b-1].pB = aux.b;
                         bitMap[aux.a-1][aux.b-1].v = true;
                         insertPQ(bitMap[aux.a-1][aux.b-1]);
-                    }else if(bitMap[aux.a-1][aux.b-1].g > (aux.g+1.05)){
-                        bitMap[aux.a-1][aux.b-1].g = aux.g+1.05;
+                    }else if(bitMap[aux.a-1][aux.b-1].g > (aux.g+14)){
+                        bitMap[aux.a-1][aux.b-1].g = aux.g+14;
                         bitMap[aux.a-1][aux.b-1].pA = aux.a;
                         bitMap[aux.a-1][aux.b-1].pB = aux.b;
                     }
                 }
                 if(bitMap[aux.a-1][aux.b].type != 1 && !bitMap[aux.a-1][aux.b].c){
                     if(!bitMap[aux.a-1][aux.b].v){
-                        bitMap[aux.a-1][aux.b].g = aux.g+1;
+                        bitMap[aux.a-1][aux.b].g = aux.g+10;
                         bitMap[aux.a-1][aux.b].pA = aux.a;
                         bitMap[aux.a-1][aux.b].pB = aux.b;
                         bitMap[aux.a-1][aux.b].v = true;
                         insertPQ(bitMap[aux.a-1][aux.b]);
-                    }else if(bitMap[aux.a-1][aux.b].g> (aux.g+1)){
-                        bitMap[aux.a-1][aux.b].g = aux.g+1;
+                    }else if(bitMap[aux.a-1][aux.b].g > (aux.g+10)){
+                        bitMap[aux.a-1][aux.b].g = aux.g+10;
                         bitMap[aux.a-1][aux.b].pA = aux.a;
                         bitMap[aux.a-1][aux.b].pB = aux.b;
                     }
                 }
                 if(aux.b+1 < 40 && bitMap[aux.a-1][aux.b+1].type != 1 && bitMap[aux.a-1][aux.b].type != 1 && bitMap[aux.a][aux.b+1].type != 1 && !bitMap[aux.a-1][aux.b+1].c){
                     if(!bitMap[aux.a][aux.b+1].v){
-                        bitMap[aux.a][aux.b+1].g = aux.g+1.05;
+                        bitMap[aux.a][aux.b+1].g = aux.g+14;
                         bitMap[aux.a][aux.b+1].pA = aux.a;
                         bitMap[aux.a][aux.b+1].pB = aux.b;
                         bitMap[aux.a][aux.b+1].v = true;
                         insertPQ(bitMap[aux.a][aux.b+1]);
-                    }else if(bitMap[aux.a][aux.b+1].g > (aux.g+1.05)){
-                        bitMap[aux.a][aux.b+1].g = aux.g+1.05;
+                    }else if(bitMap[aux.a][aux.b+1].g > (aux.g+14)){
+                        bitMap[aux.a][aux.b+1].g = aux.g+14;
                         bitMap[aux.a][aux.b+1].pA = aux.a;
                         bitMap[aux.a][aux.b+1].pB = aux.b;
                     }
@@ -198,26 +200,26 @@ startSearch = function(){
             }
             if(aux.b-1 >= 0 && bitMap[aux.a][aux.b-1].type != 1 && !bitMap[aux.a][aux.b-1].c){
                 if(!bitMap[aux.a][aux.b-1].v){
-                    bitMap[aux.a][aux.b-1].g = aux.g+1;
+                    bitMap[aux.a][aux.b-1].g = aux.g+10;
                     bitMap[aux.a][aux.b-1].pA = aux.a;
                     bitMap[aux.a][aux.b-1].pB = aux.b;
                     bitMap[aux.a][aux.b-1].v = true;
                     insertPQ(bitMap[aux.a][aux.b-1]);
-                }else if(bitMap[aux.a][aux.b-1].g > (aux.g+1)){
-                    bitMap[aux.a][aux.b-1].g = aux.g+1;
+                }else if(bitMap[aux.a][aux.b-1].g > (aux.g+10)){
+                    bitMap[aux.a][aux.b-1].g = aux.g+10;
                     bitMap[aux.a][aux.b-1].pA = aux.a;
                     bitMap[aux.a][aux.b-1].pB = aux.b;
                 }
             }
             if(aux.b+1 < 40 && bitMap[aux.a][aux.b+1].type != 1 && !bitMap[aux.a][aux.b+1].c){
                 if(!bitMap[aux.a][aux.b+1].v){
-                    bitMap[aux.a][aux.b+1].g = aux.g+1;
+                    bitMap[aux.a][aux.b+1].g = aux.g+10;
                     bitMap[aux.a][aux.b+1].pA = aux.a;
                     bitMap[aux.a][aux.b+1].pB = aux.b;
                     bitMap[aux.a][aux.b+1].v = true;
                     insertPQ(bitMap[aux.a][aux.b+1]);
-                }else if(bitMap[aux.a][aux.b+1].g > (aux.g+1)){
-                    bitMap[aux.a][aux.b+1].g = aux.g+1;
+                }else if(bitMap[aux.a][aux.b+1].g > (aux.g+10)){
+                    bitMap[aux.a][aux.b+1].g = aux.g+10;
                     bitMap[aux.a][aux.b+1].pA = aux.a;
                     bitMap[aux.a][aux.b+1].pB = aux.b;
                 }
@@ -225,69 +227,70 @@ startSearch = function(){
             if(aux.a+1 < 40){
                 if(aux.b-1 >= 0 && bitMap[aux.a+1][aux.b-1].type != 1 && bitMap[aux.a+1][aux.b].type != 1 && bitMap[aux.a][aux.b-1].type != 1 && !bitMap[aux.a+1][aux.b-1].c){
                     if(!bitMap[aux.a+1][aux.b-1].v){
-                        bitMap[aux.a+1][aux.b-1].g = aux.g+1.05;
+                        bitMap[aux.a+1][aux.b-1].g = aux.g+14;
                         bitMap[aux.a+1][aux.b-1].pA = aux.a;
                         bitMap[aux.a+1][aux.b-1].pB = aux.b;
                         bitMap[aux.a+1][aux.b-1].v = true;
                         insertPQ(bitMap[aux.a+1][aux.b-1]);
-                    }else if(bitMap[aux.a+1][aux.b-1].g > (aux.g+1.05)){
-                        bitMap[aux.a+1][aux.b-1].g = aux.g+1.05;
+                    }else if(bitMap[aux.a+1][aux.b-1].g > (aux.g+14)){
+                        bitMap[aux.a+1][aux.b-1].g = aux.g+14;
                         bitMap[aux.a+1][aux.b-1].pA = aux.a;
                         bitMap[aux.a+1][aux.b-1].pB = aux.b;
                     }
                 }
                 if(bitMap[aux.a+1][aux.b].type != 1 && !bitMap[aux.a+1][aux.b].c){
                     if(!bitMap[aux.a+1][aux.b].v){
-                        bitMap[aux.a+1][aux.b].g = aux.g+1;
+                        bitMap[aux.a+1][aux.b].g = aux.g+10;
                         bitMap[aux.a+1][aux.b].pA = aux.a;
                         bitMap[aux.a+1][aux.b].pB = aux.b;
                         bitMap[aux.a+1][aux.b].v = true;
                         insertPQ(bitMap[aux.a+1][aux.b]);
-                    }else if(bitMap[aux.a+1][aux.b].g > (aux.g+1)){
-                        bitMap[aux.a+1][aux.b].g = aux.g+1;
+                    }else if(bitMap[aux.a+1][aux.b].g > (aux.g+10)){
+                        bitMap[aux.a+1][aux.b].g = aux.g+10;
                         bitMap[aux.a+1][aux.b].pA = aux.a;
                         bitMap[aux.a+1][aux.b].pB = aux.b;
                     }
                 }
                 if(aux.b+1 < 40 && bitMap[aux.a+1][aux.b+1].type != 1 && bitMap[aux.a+1][aux.b].type != 1 && bitMap[aux.a][aux.b+1].type != 1 && !bitMap[aux.a+1][aux.b+1].c){
                     if(!bitMap[aux.a+1][aux.b+1].v){
-                        bitMap[aux.a+1][aux.b+1].g = aux.g+1.05;
+                        bitMap[aux.a+1][aux.b+1].g = aux.g+14;
                         bitMap[aux.a+1][aux.b+1].pA = aux.a;
                         bitMap[aux.a+1][aux.b+1].pB = aux.b;
                         bitMap[aux.a+1][aux.b+1].v = true;
                         insertPQ(bitMap[aux.a+1][aux.b+1]);
-                    }else if(bitMap[aux.a+1][aux.b+1].g > (aux.g+1.05)){
-                        bitMap[aux.a+1][aux.b+1].g = aux.g+1.05;
+                    }else if(bitMap[aux.a+1][aux.b+1].g > (aux.g+14)){
+                        bitMap[aux.a+1][aux.b+1].g = aux.g+14;
                         bitMap[aux.a+1][aux.b+1].pA = aux.a;
                         bitMap[aux.a+1][aux.b+1].pB = aux.b;
                     }
                 }
             }
         }
-    }
-
-    var rA = goalA;
-    var rB = goalB;
-    while(true){
-        if(rA == sA){
-            if(rB == sB){
-                break;
+        var rA = goalA;
+        var rB = goalB;
+        while(true){
+            if(rA == sA){
+                if(rB == sB){
+                    break;
+                }
             }
+            rA = bitMap[rA][rB].pA;
+            rB = bitMap[rA][rB].pB;
+            ctx.fillStyle = "#00ee00";
+            ctx.fillRect(rA*10,rB*10,10,10);
+            ctx.fillStyle = "#0000ee";
+            ctx.fillRect(sA*10,sB*10,10,10);
         }
-        rA = bitMap[rA][rB].pA;
-        rB = bitMap[rA][rB].pB;
-        ctx.fillStyle = "#00ee00";
-        ctx.fillRect(rA*10,rB*10,10,10);
+        ctx.fillStyle = "#0000ee";
+        ctx.fillRect(sA*10,sB*10,10,10);
     }
-    ctx.fillStyle = "#0000ee";
-    ctx.fillRect(sA*10,sB*10,10,10);
 };
 
 function editClick(e){
     var rect = canvas.getBoundingClientRect();
     var x = Math.floor((e.clientX - rect.left-7)/10);
     var y = Math.floor((e.clientY - rect.top-7)/10);
-    console.log(x + ", " + y);
+    console.log(bitMap[x][y]);
     if(bitMap[x][y].type == 1){
         bitMap[x][y].type = 0;
         ctx.fillStyle = "#ffffff";
