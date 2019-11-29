@@ -17,6 +17,8 @@ var is3dCanvas = true;
 var diagWeight = 1.5;
 var vertWeight = 1.0;
 var fireStart = false;
+var timeToSlow = 25;
+var thisInterval = setInterval(function(){}, 10000);
 
 var Node = {
     a: null,
@@ -128,6 +130,7 @@ insertPQ = function(node){
 };
 
 startSearch = function(){
+    clearInterval(thisInterval);
     fireStart = false;
     sSearch = true;
     toVisit = [];
@@ -271,7 +274,7 @@ startSearch = function(){
             }
         }
     }*/
-    var thisInterval = setInterval(function(){
+    thisInterval = setInterval(function(){
         var aux = toVisit.shift();
         visited.push(aux);
         bitMap[aux.a][aux.b].c = true;
@@ -280,7 +283,7 @@ startSearch = function(){
         }else{
             
             if(aux.a-1 >= 0){
-                if(aux.b-1 >= 0 && bitMap[aux.a-1][aux.b-1].type != 1 && bitMap[aux.a-1][aux.b].type != 1 && bitMap[aux.a][aux.b-1].type != 1 && !bitMap[aux.a-1][aux.b-1].c){
+                if(aux.b-1 >= 0 && (bitMap[aux.a-1][aux.b-1].type != 1 && bitMap[aux.a-1][aux.b].type != 1) && bitMap[aux.a][aux.b-1].type != 1 && !bitMap[aux.a-1][aux.b-1].c){
                     if(!bitMap[aux.a-1][aux.b-1].v){
                         bitMap[aux.a-1][aux.b-1].g = aux.g+diagWeight;
                         bitMap[aux.a-1][aux.b-1].pA = aux.a;
@@ -314,7 +317,7 @@ startSearch = function(){
                     bitMap[aux.a-1][aux.b].pA = aux.a;
                     bitMap[aux.a-1][aux.b].pB = aux.b;
                 }
-                if(aux.b+1 < 40 && bitMap[aux.a-1][aux.b+1].type != 1 && bitMap[aux.a-1][aux.b].type != 1 && bitMap[aux.a][aux.b+1].type != 1 && !bitMap[aux.a-1][aux.b+1].c){
+                if(aux.b+1 < 40 && (bitMap[aux.a-1][aux.b+1].type != 1 && bitMap[aux.a-1][aux.b].type != 1) && bitMap[aux.a][aux.b+1].type != 1 && !bitMap[aux.a-1][aux.b+1].c){
                     if(!bitMap[aux.a][aux.b+1].v){
                         bitMap[aux.a][aux.b+1].g = aux.g+diagWeight;
                         bitMap[aux.a][aux.b+1].pA = aux.a;
@@ -367,7 +370,7 @@ startSearch = function(){
                 bitMap[aux.a][aux.b+1].pB = aux.b;
             }
             if(aux.a+1 < 40){
-                if(aux.b-1 >= 0 && bitMap[aux.a+1][aux.b-1].type != 1 && bitMap[aux.a+1][aux.b].type != 1 && bitMap[aux.a][aux.b-1].type != 1 && !bitMap[aux.a+1][aux.b-1].c){
+                if(aux.b-1 >= 0 && (bitMap[aux.a+1][aux.b-1].type != 1 && bitMap[aux.a+1][aux.b].type != 1) && bitMap[aux.a][aux.b-1].type != 1 && !bitMap[aux.a+1][aux.b-1].c){
                     if(!bitMap[aux.a+1][aux.b-1].v){
                         bitMap[aux.a+1][aux.b-1].g = aux.g+diagWeight;
                         bitMap[aux.a+1][aux.b-1].pA = aux.a;
@@ -401,7 +404,7 @@ startSearch = function(){
                     bitMap[aux.a+1][aux.b].pA = aux.a;
                     bitMap[aux.a+1][aux.b].pB = aux.b;
                 }
-                if(aux.b+1 < 40 && bitMap[aux.a+1][aux.b+1].type != 1 && bitMap[aux.a+1][aux.b].type != 1 && bitMap[aux.a][aux.b+1].type != 1 && !bitMap[aux.a+1][aux.b+1].c){
+                if(aux.b+1 < 40 && (bitMap[aux.a+1][aux.b+1].type != 1 && bitMap[aux.a+1][aux.b].type != 1) && bitMap[aux.a][aux.b+1].type != 1 && !bitMap[aux.a+1][aux.b+1].c){
                     if(!bitMap[aux.a+1][aux.b+1].v){
                         bitMap[aux.a+1][aux.b+1].g = aux.g+diagWeight;
                         bitMap[aux.a+1][aux.b+1].pA = aux.a;
@@ -424,6 +427,10 @@ startSearch = function(){
             clearInterval(thisInterval);
             var rA = goalA;
             var rB = goalB;
+            console.log("Dados do novo caminho: ");
+            console.log("Início: X:" + sA + " Y: " + sB);
+            console.log("Fim: X:" + goalA + " Y: " + goalB);
+            console.log(" ");
             var littleInterval = setInterval(function(){
                 if(rA == sA){
                     if(rB == sB){
@@ -434,11 +441,12 @@ startSearch = function(){
                         }, 10);
                     }
                 }
+                console.log("X: " + rA + " Y: " + rB);
                 rA = bitMap[rA][rB].pA;
                 rB = bitMap[rA][rB].pB;
                 ctx.fillStyle = "#00ee00";
                 ctx.fillRect(rA*10,rB*10,10,10);
-            }, 50);
+            }, timeToSlow);
             /*while(true){
                 if(rA == sA){
                     if(rB == sB){
@@ -450,7 +458,7 @@ startSearch = function(){
             ctx.fillStyle = "#0000ee";
             ctx.fillRect(sA*10,sB*10,10,10);
         }
-    }, 50);
+    }, timeToSlow);
     
     ctx.fillStyle = "#0000ee";
     ctx.fillRect(sA*10,sB*10,10,10);
