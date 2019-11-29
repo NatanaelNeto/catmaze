@@ -14,6 +14,9 @@ var visited = [];
 var checkBox = document.getElementById("editCheck");
 var sSearch = false;
 var is3dCanvas = true;
+var diagWeight = 1.5;
+var vertWeight = 1.0;
+var fireStart = false;
 
 var Node = {
     a: null,
@@ -44,6 +47,8 @@ setPCent = function(v){
 }
 
 startBtn = function(){
+    fireStart = true;
+    sSearch = false;
     bitMap = new Array(40);
     for(var i = 0; i< 40;i++){
         bitMap[i] = new Array(40);
@@ -123,6 +128,7 @@ insertPQ = function(node){
 };
 
 startSearch = function(){
+    fireStart = false;
     sSearch = true;
     toVisit = [];
     visited = [];
@@ -147,7 +153,7 @@ startSearch = function(){
     bitMap[sA][sB].pA = sA;
     bitMap[sA][sB].pB = sB;
     toVisit.push(bitMap[sA][sB]);
-    while(toVisit.length > 0 && !goalReached){
+    /*while(toVisit.length > 0 && !goalReached){
         var aux = toVisit.shift();
         visited.push(aux);
         bitMap[aux.a][aux.b].c = true;
@@ -158,7 +164,7 @@ startSearch = function(){
             if(aux.a-1 >= 0){
                 if(aux.b-1 >= 0 && bitMap[aux.a-1][aux.b-1].type != 1 && bitMap[aux.a-1][aux.b].type != 1 && bitMap[aux.a][aux.b-1].type != 1 && !bitMap[aux.a-1][aux.b-1].c){
                     if(!bitMap[aux.a-1][aux.b-1].v){
-                        bitMap[aux.a-1][aux.b-1].g = aux.g+1.05;
+                        bitMap[aux.a-1][aux.b-1].g = aux.g+vertWeight.05;
                         bitMap[aux.a-1][aux.b-1].pA = aux.a;
                         bitMap[aux.a-1][aux.b-1].pB = aux.b;
                         bitMap[aux.a-1][aux.b-1].v = true;
@@ -264,21 +270,188 @@ startSearch = function(){
                 }
             }
         }
-    }
-
-    var rA = goalA;
-    var rB = goalB;
-    while(true){
-        if(rA == sA){
-            if(rB == sB){
-                break;
+    }*/
+    var thisInterval = setInterval(function(){
+        var aux = toVisit.shift();
+        visited.push(aux);
+        bitMap[aux.a][aux.b].c = true;
+        if(aux.h == 0){
+            goalReached = true;
+        }else{
+            
+            if(aux.a-1 >= 0){
+                if(aux.b-1 >= 0 && bitMap[aux.a-1][aux.b-1].type != 1 && bitMap[aux.a-1][aux.b].type != 1 && bitMap[aux.a][aux.b-1].type != 1 && !bitMap[aux.a-1][aux.b-1].c){
+                    if(!bitMap[aux.a-1][aux.b-1].v){
+                        bitMap[aux.a-1][aux.b-1].g = aux.g+diagWeight;
+                        bitMap[aux.a-1][aux.b-1].pA = aux.a;
+                        bitMap[aux.a-1][aux.b-1].pB = aux.b;
+                        bitMap[aux.a-1][aux.b-1].v = true;
+                        insertPQ(bitMap[aux.a-1][aux.b-1]);
+                    }else if(bitMap[aux.a-1][aux.b-1].g > (aux.g+diagWeight)){
+                        bitMap[aux.a-1][aux.b-1].g = aux.g+diagWeight;
+                        bitMap[aux.a-1][aux.b-1].pA = aux.a;
+                        bitMap[aux.a-1][aux.b-1].pB = aux.b;
+                    }
+                }else if(bitMap[aux.a-1][aux.b-1].c && bitMap[aux.a-1][aux.b-1].g > (aux.g+diagWeight)){
+                    bitMap[aux.a-1][aux.b-1].g = aux.g+diagWeight;
+                    bitMap[aux.a-1][aux.b-1].pA = aux.a;
+                    bitMap[aux.a-1][aux.b-1].pB = aux.b;
+                }
+                if(bitMap[aux.a-1][aux.b].type != 1 && !bitMap[aux.a-1][aux.b].c){
+                    if(!bitMap[aux.a-1][aux.b].v){
+                        bitMap[aux.a-1][aux.b].g = aux.g+vertWeight;
+                        bitMap[aux.a-1][aux.b].pA = aux.a;
+                        bitMap[aux.a-1][aux.b].pB = aux.b;
+                        bitMap[aux.a-1][aux.b].v = true;
+                        insertPQ(bitMap[aux.a-1][aux.b]);
+                    }else if(bitMap[aux.a-1][aux.b].g> (aux.g+vertWeight)){
+                        bitMap[aux.a-1][aux.b].g = aux.g+vertWeight;
+                        bitMap[aux.a-1][aux.b].pA = aux.a;
+                        bitMap[aux.a-1][aux.b].pB = aux.b;
+                    }
+                }else if(bitMap[aux.a-1][aux.b].c && bitMap[aux.a-1][aux.b].g> (aux.g+vertWeight)){
+                    bitMap[aux.a-1][aux.b].g = aux.g+vertWeight;
+                    bitMap[aux.a-1][aux.b].pA = aux.a;
+                    bitMap[aux.a-1][aux.b].pB = aux.b;
+                }
+                if(aux.b+1 < 40 && bitMap[aux.a-1][aux.b+1].type != 1 && bitMap[aux.a-1][aux.b].type != 1 && bitMap[aux.a][aux.b+1].type != 1 && !bitMap[aux.a-1][aux.b+1].c){
+                    if(!bitMap[aux.a][aux.b+1].v){
+                        bitMap[aux.a][aux.b+1].g = aux.g+diagWeight;
+                        bitMap[aux.a][aux.b+1].pA = aux.a;
+                        bitMap[aux.a][aux.b+1].pB = aux.b;
+                        bitMap[aux.a][aux.b+1].v = true;
+                        insertPQ(bitMap[aux.a][aux.b+1]);
+                    }else if(bitMap[aux.a][aux.b+1].g > (aux.g+diagWeight)){
+                        bitMap[aux.a][aux.b+1].g = aux.g+diagWeight;
+                        bitMap[aux.a][aux.b+1].pA = aux.a;
+                        bitMap[aux.a][aux.b+1].pB = aux.b;
+                    }
+                }else if(aux.b+1 < 40 && bitMap[aux.a][aux.b+1].c && bitMap[aux.a][aux.b+1].g > (aux.g+diagWeight)){
+                    bitMap[aux.a][aux.b+1].g = aux.g+diagWeight;
+                    bitMap[aux.a][aux.b+1].pA = aux.a;
+                    bitMap[aux.a][aux.b+1].pB = aux.b;
+                }
+            }
+            if(aux.b-1 >= 0 && bitMap[aux.a][aux.b-1].type != 1 && !bitMap[aux.a][aux.b-1].c){
+                if(!bitMap[aux.a][aux.b-1].v){
+                    bitMap[aux.a][aux.b-1].g = aux.g+vertWeight;
+                    bitMap[aux.a][aux.b-1].pA = aux.a;
+                    bitMap[aux.a][aux.b-1].pB = aux.b;
+                    bitMap[aux.a][aux.b-1].v = true;
+                    insertPQ(bitMap[aux.a][aux.b-1]);
+                }else if(bitMap[aux.a][aux.b-1].g > (aux.g+vertWeight)){
+                    bitMap[aux.a][aux.b-1].g = aux.g+vertWeight;
+                    bitMap[aux.a][aux.b-1].pA = aux.a;
+                    bitMap[aux.a][aux.b-1].pB = aux.b;
+                }
+            }else if(aux.b-1 >= 0 && bitMap[aux.a][aux.b-1].c && bitMap[aux.a][aux.b-1].g > (aux.g+vertWeight)){
+                bitMap[aux.a][aux.b-1].g = aux.g+vertWeight;
+                bitMap[aux.a][aux.b-1].pA = aux.a;
+                bitMap[aux.a][aux.b-1].pB = aux.b;
+            }
+            if(aux.b+1 < 40 && bitMap[aux.a][aux.b+1].type != 1 && !bitMap[aux.a][aux.b+1].c){
+                if(!bitMap[aux.a][aux.b+1].v){
+                    bitMap[aux.a][aux.b+1].g = aux.g+vertWeight;
+                    bitMap[aux.a][aux.b+1].pA = aux.a;
+                    bitMap[aux.a][aux.b+1].pB = aux.b;
+                    bitMap[aux.a][aux.b+1].v = true;
+                    insertPQ(bitMap[aux.a][aux.b+1]);
+                }else if(bitMap[aux.a][aux.b+1].g > (aux.g+vertWeight)){
+                    bitMap[aux.a][aux.b+1].g = aux.g+vertWeight;
+                    bitMap[aux.a][aux.b+1].pA = aux.a;
+                    bitMap[aux.a][aux.b+1].pB = aux.b;
+                }
+            }else if(aux.b+1 < 40  && bitMap[aux.a][aux.b+1].c && bitMap[aux.a][aux.b+1].g > (aux.g+vertWeight)){
+                bitMap[aux.a][aux.b+1].g = aux.g+vertWeight;
+                bitMap[aux.a][aux.b+1].pA = aux.a;
+                bitMap[aux.a][aux.b+1].pB = aux.b;
+            }
+            if(aux.a+1 < 40){
+                if(aux.b-1 >= 0 && bitMap[aux.a+1][aux.b-1].type != 1 && bitMap[aux.a+1][aux.b].type != 1 && bitMap[aux.a][aux.b-1].type != 1 && !bitMap[aux.a+1][aux.b-1].c){
+                    if(!bitMap[aux.a+1][aux.b-1].v){
+                        bitMap[aux.a+1][aux.b-1].g = aux.g+diagWeight;
+                        bitMap[aux.a+1][aux.b-1].pA = aux.a;
+                        bitMap[aux.a+1][aux.b-1].pB = aux.b;
+                        bitMap[aux.a+1][aux.b-1].v = true;
+                        insertPQ(bitMap[aux.a+1][aux.b-1]);
+                    }else if(bitMap[aux.a+1][aux.b-1].g > (aux.g+diagWeight)){
+                        bitMap[aux.a+1][aux.b-1].g = aux.g+diagWeight;
+                        bitMap[aux.a+1][aux.b-1].pA = aux.a;
+                        bitMap[aux.a+1][aux.b-1].pB = aux.b;
+                    }
+                }else if(aux.b-1 >= 0 && bitMap[aux.a+1][aux.b-1].c && bitMap[aux.a+1][aux.b-1].g > (aux.g+diagWeight)){
+                    bitMap[aux.a+1][aux.b-1].g = aux.g+diagWeight;
+                    bitMap[aux.a+1][aux.b-1].pA = aux.a;
+                    bitMap[aux.a+1][aux.b-1].pB = aux.b;
+                }
+                if(bitMap[aux.a+1][aux.b].type != 1 && !bitMap[aux.a+1][aux.b].c){
+                    if(!bitMap[aux.a+1][aux.b].v){
+                        bitMap[aux.a+1][aux.b].g = aux.g+vertWeight;
+                        bitMap[aux.a+1][aux.b].pA = aux.a;
+                        bitMap[aux.a+1][aux.b].pB = aux.b;
+                        bitMap[aux.a+1][aux.b].v = true;
+                        insertPQ(bitMap[aux.a+1][aux.b]);
+                    }else if(bitMap[aux.a+1][aux.b].g > (aux.g+vertWeight)){
+                        bitMap[aux.a+1][aux.b].g = aux.g+vertWeight;
+                        bitMap[aux.a+1][aux.b].pA = aux.a;
+                        bitMap[aux.a+1][aux.b].pB = aux.b;
+                    }
+                }else if(bitMap[aux.a+1][aux.b].c && bitMap[aux.a+1][aux.b].g > (aux.g+vertWeight)){
+                    bitMap[aux.a+1][aux.b].g = aux.g+vertWeight;
+                    bitMap[aux.a+1][aux.b].pA = aux.a;
+                    bitMap[aux.a+1][aux.b].pB = aux.b;
+                }
+                if(aux.b+1 < 40 && bitMap[aux.a+1][aux.b+1].type != 1 && bitMap[aux.a+1][aux.b].type != 1 && bitMap[aux.a][aux.b+1].type != 1 && !bitMap[aux.a+1][aux.b+1].c){
+                    if(!bitMap[aux.a+1][aux.b+1].v){
+                        bitMap[aux.a+1][aux.b+1].g = aux.g+diagWeight;
+                        bitMap[aux.a+1][aux.b+1].pA = aux.a;
+                        bitMap[aux.a+1][aux.b+1].pB = aux.b;
+                        bitMap[aux.a+1][aux.b+1].v = true;
+                        insertPQ(bitMap[aux.a+1][aux.b+1]);
+                    }else if(bitMap[aux.a+1][aux.b+1].g > (aux.g+diagWeight)){
+                        bitMap[aux.a+1][aux.b+1].g = aux.g+diagWeight;
+                        bitMap[aux.a+1][aux.b+1].pA = aux.a;
+                        bitMap[aux.a+1][aux.b+1].pB = aux.b;
+                    }
+                }else if(aux.b+1 < 40 && bitMap[aux.a+1][aux.b+1].c && bitMap[aux.a+1][aux.b+1].g > (aux.g+diagWeight)){
+                    bitMap[aux.a+1][aux.b+1].g = aux.g+diagWeight;
+                    bitMap[aux.a+1][aux.b+1].pA = aux.a;
+                    bitMap[aux.a+1][aux.b+1].pB = aux.b;
+                }
             }
         }
-        rA = bitMap[rA][rB].pA;
-        rB = bitMap[rA][rB].pB;
-        ctx.fillStyle = "#00ee00";
-        ctx.fillRect(rA*10,rB*10,10,10);
-    }
+        if(toVisit.length == 0 || goalReached || fireStart) {
+            clearInterval(thisInterval);
+            var rA = goalA;
+            var rB = goalB;
+            var littleInterval = setInterval(function(){
+                if(rA == sA){
+                    if(rB == sB){
+                        clearInterval(littleInterval);
+                        setTimeout(function(){
+                            ctx.fillStyle = "#0000ee";
+                            ctx.fillRect(sA*10,sB*10,10,10);
+                        }, 10);
+                    }
+                }
+                rA = bitMap[rA][rB].pA;
+                rB = bitMap[rA][rB].pB;
+                ctx.fillStyle = "#00ee00";
+                ctx.fillRect(rA*10,rB*10,10,10);
+            }, 50);
+            /*while(true){
+                if(rA == sA){
+                    if(rB == sB){
+                        break;
+                    }
+                }
+                
+            }*/
+            ctx.fillStyle = "#0000ee";
+            ctx.fillRect(sA*10,sB*10,10,10);
+        }
+    }, 50);
+    
     ctx.fillStyle = "#0000ee";
     ctx.fillRect(sA*10,sB*10,10,10);
 };
