@@ -11,7 +11,8 @@ var sA;
 var sB;
 var toVisit = [];
 var visited = [];
-
+var checkBox = document.getElementById("editCheck");
+var sSearch = false;
 
 var Node = {
     a: null,
@@ -92,6 +93,9 @@ startBtn = function(){
     sB = b;
     ctx.fillStyle = "#0000ee";
     ctx.fillRect(a*10,b*10,10,10);
+    if(checkBox.checked){
+        canvas.addEventListener("click",editClick,false);
+    }
 };
 
 insertPQ = function(node){
@@ -115,6 +119,7 @@ insertPQ = function(node){
 };
 
 startSearch = function(){
+    sSearch = true;
     toVisit = [];
     visited = [];
     var goalReached = false;
@@ -123,6 +128,14 @@ startSearch = function(){
         for(var j = 0; j < 40; j++){
             if(bitMap[i][j].type != 1){
                 bitMap[i][j].h = distMapGen(i,j,goalA,goalB);
+                bitMap[i][j].pA = null;
+                bitMap[i][j].pB = null;
+                bitMap[i][j].v = null;
+                bitMap[i][j].c = null;
+                if(bitMap[i][j].type != 2 && bitMap[i][j].type != 3){
+                    ctx.fillStyle = "#ffffff";
+                    ctx.fillRect(i*10,j*10,10,10);
+                }
             }
         }
     }
@@ -141,13 +154,13 @@ startSearch = function(){
             if(aux.a-1 >= 0){
                 if(aux.b-1 >= 0 && bitMap[aux.a-1][aux.b-1].type != 1 && bitMap[aux.a-1][aux.b].type != 1 && bitMap[aux.a][aux.b-1].type != 1 && !bitMap[aux.a-1][aux.b-1].c){
                     if(!bitMap[aux.a-1][aux.b-1].v){
-                        bitMap[aux.a-1][aux.b-1].g = aux.g+1.1;
+                        bitMap[aux.a-1][aux.b-1].g = aux.g+1.4;
                         bitMap[aux.a-1][aux.b-1].pA = aux.a;
                         bitMap[aux.a-1][aux.b-1].pB = aux.b;
                         bitMap[aux.a-1][aux.b-1].v = true;
                         insertPQ(bitMap[aux.a-1][aux.b-1]);
-                    }else if(bitMap[aux.a-1][aux.b-1].g > (aux.g+1.1)){
-                        bitMap[aux.a-1][aux.b-1].g = aux.g+1.1;
+                    }else if(bitMap[aux.a-1][aux.b-1].g > (aux.g+1.4)){
+                        bitMap[aux.a-1][aux.b-1].g = aux.g+1.4;
                         bitMap[aux.a-1][aux.b-1].pA = aux.a;
                         bitMap[aux.a-1][aux.b-1].pB = aux.b;
                     }
@@ -159,7 +172,7 @@ startSearch = function(){
                         bitMap[aux.a-1][aux.b].pB = aux.b;
                         bitMap[aux.a-1][aux.b].v = true;
                         insertPQ(bitMap[aux.a-1][aux.b]);
-                    }else if(bitMap[aux.a-1][aux.b].g> (aux.g+1.1)){
+                    }else if(bitMap[aux.a-1][aux.b].g> (aux.g+1.4)){
                         bitMap[aux.a-1][aux.b].g = aux.g+1;
                         bitMap[aux.a-1][aux.b].pA = aux.a;
                         bitMap[aux.a-1][aux.b].pB = aux.b;
@@ -167,13 +180,13 @@ startSearch = function(){
                 }
                 if(aux.b+1 < 40 && bitMap[aux.a-1][aux.b+1].type != 1 && bitMap[aux.a-1][aux.b].type != 1 && bitMap[aux.a][aux.b+1].type != 1 && !bitMap[aux.a-1][aux.b+1].c){
                     if(!bitMap[aux.a][aux.b+1].v){
-                        bitMap[aux.a][aux.b+1].g = aux.g+1.1;
+                        bitMap[aux.a][aux.b+1].g = aux.g+1.4;
                         bitMap[aux.a][aux.b+1].pA = aux.a;
                         bitMap[aux.a][aux.b+1].pB = aux.b;
                         bitMap[aux.a][aux.b+1].v = true;
                         insertPQ(bitMap[aux.a][aux.b+1]);
-                    }else if(bitMap[aux.a][aux.b+1].g > (aux.g+1.1)){
-                        bitMap[aux.a][aux.b+1].g = aux.g+1.1;
+                    }else if(bitMap[aux.a][aux.b+1].g > (aux.g+1.4)){
+                        bitMap[aux.a][aux.b+1].g = aux.g+1.4;
                         bitMap[aux.a][aux.b+1].pA = aux.a;
                         bitMap[aux.a][aux.b+1].pB = aux.b;
                     }
@@ -186,7 +199,7 @@ startSearch = function(){
                     bitMap[aux.a][aux.b-1].pB = aux.b;
                     bitMap[aux.a][aux.b-1].v = true;
                     insertPQ(bitMap[aux.a][aux.b-1]);
-                }else if(bitMap[aux.a][aux.b-1].g > (aux.g+1.1)){
+                }else if(bitMap[aux.a][aux.b-1].g > (aux.g+1.4)){
                     bitMap[aux.a][aux.b-1].g = aux.g+1;
                     bitMap[aux.a][aux.b-1].pA = aux.a;
                     bitMap[aux.a][aux.b-1].pB = aux.b;
@@ -199,7 +212,7 @@ startSearch = function(){
                     bitMap[aux.a][aux.b+1].pB = aux.b;
                     bitMap[aux.a][aux.b+1].v = true;
                     insertPQ(bitMap[aux.a][aux.b+1]);
-                }else if(bitMap[aux.a][aux.b+1].g > (aux.g+1.1)){
+                }else if(bitMap[aux.a][aux.b+1].g > (aux.g+1.4)){
                     bitMap[aux.a][aux.b+1].g = aux.g+1;
                     bitMap[aux.a][aux.b+1].pA = aux.a;
                     bitMap[aux.a][aux.b+1].pB = aux.b;
@@ -208,13 +221,13 @@ startSearch = function(){
             if(aux.a+1 < 40){
                 if(aux.b-1 >= 0 && bitMap[aux.a+1][aux.b-1].type != 1 && bitMap[aux.a+1][aux.b].type != 1 && bitMap[aux.a][aux.b-1].type != 1 && !bitMap[aux.a+1][aux.b-1].c){
                     if(!bitMap[aux.a+1][aux.b-1].v){
-                        bitMap[aux.a+1][aux.b-1].g = aux.g+1.1;
+                        bitMap[aux.a+1][aux.b-1].g = aux.g+1.4;
                         bitMap[aux.a+1][aux.b-1].pA = aux.a;
                         bitMap[aux.a+1][aux.b-1].pB = aux.b;
                         bitMap[aux.a+1][aux.b-1].v = true;
                         insertPQ(bitMap[aux.a+1][aux.b-1]);
-                    }else if(bitMap[aux.a+1][aux.b-1].g > (aux.g+1.1)){
-                        bitMap[aux.a+1][aux.b-1].g = aux.g+1.1;
+                    }else if(bitMap[aux.a+1][aux.b-1].g > (aux.g+1.4)){
+                        bitMap[aux.a+1][aux.b-1].g = aux.g+1.4;
                         bitMap[aux.a+1][aux.b-1].pA = aux.a;
                         bitMap[aux.a+1][aux.b-1].pB = aux.b;
                     }
@@ -226,7 +239,7 @@ startSearch = function(){
                         bitMap[aux.a+1][aux.b].pB = aux.b;
                         bitMap[aux.a+1][aux.b].v = true;
                         insertPQ(bitMap[aux.a+1][aux.b]);
-                    }else if(bitMap[aux.a+1][aux.b].g > (aux.g+1.1)){
+                    }else if(bitMap[aux.a+1][aux.b].g > (aux.g+1.4)){
                         bitMap[aux.a+1][aux.b].g = aux.g+1;
                         bitMap[aux.a+1][aux.b].pA = aux.a;
                         bitMap[aux.a+1][aux.b].pB = aux.b;
@@ -234,13 +247,13 @@ startSearch = function(){
                 }
                 if(aux.b+1 < 40 && bitMap[aux.a+1][aux.b+1].type != 1 && bitMap[aux.a+1][aux.b].type != 1 && bitMap[aux.a][aux.b+1].type != 1 && !bitMap[aux.a+1][aux.b+1].c){
                     if(!bitMap[aux.a+1][aux.b+1].v){
-                        bitMap[aux.a+1][aux.b+1].g = aux.g+1.1;
+                        bitMap[aux.a+1][aux.b+1].g = aux.g+1.4;
                         bitMap[aux.a+1][aux.b+1].pA = aux.a;
                         bitMap[aux.a+1][aux.b+1].pB = aux.b;
                         bitMap[aux.a+1][aux.b+1].v = true;
                         insertPQ(bitMap[aux.a+1][aux.b+1]);
-                    }else if(bitMap[aux.a+1][aux.b+1].g > (aux.g+1.1)){
-                        bitMap[aux.a+1][aux.b+1].g = aux.g+1.1;
+                    }else if(bitMap[aux.a+1][aux.b+1].g > (aux.g+1.4)){
+                        bitMap[aux.a+1][aux.b+1].g = aux.g+1.4;
                         bitMap[aux.a+1][aux.b+1].pA = aux.a;
                         bitMap[aux.a+1][aux.b+1].pB = aux.b;
                     }
@@ -265,3 +278,24 @@ startSearch = function(){
     ctx.fillStyle = "#0000ee";
     ctx.fillRect(sA*10,sB*10,10,10);
 };
+
+function editClick(e){
+    var rect = canvas.getBoundingClientRect();
+    var x = Math.floor((e.clientX - rect.left-7)/10);
+    var y = Math.floor((e.clientY - rect.top-7)/10);
+    console.log(x + ", " + y);
+    if(bitMap[x][y].type == 1){
+        bitMap[x][y].type = 0;
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(x*10,y*10,10,10);
+    }else if(bitMap[x][y].type == 0){
+        bitMap[x][y].type = 1;
+        ctx.fillStyle = "#000000";
+        ctx.fillRect(x*10,y*10,10,10);
+    }
+
+    if(sSearch){
+        startSearch();
+    }
+};
+

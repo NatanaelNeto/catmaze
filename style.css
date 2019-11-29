@@ -122,6 +122,10 @@ canvas{
     background-color: #222;
     border: 8px solid #222;
     border-radius: 8px;
-    transform: scale(1.2) rotateX(60deg) rotateY(0deg) rotateZ(-45deg);
+    transition: all 0.3s ease;
+}
+.canvas3d{
+    filter: blur(0.75px);
+    transform: scale(1) rotateX(60deg) rotateY(0deg) rotateZ(-45deg);
     box-shadow: -8px 8px 16px rgba(0, 0, 0, 0.2);
 }
